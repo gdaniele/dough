@@ -1,21 +1,23 @@
 import AppKit
-import DoughCore
+import PanificioCore
 import SwiftUI
 
 /// The menu bar's panel: the bank and the streak, the session, the last two weeks.
 public struct MenuPanel: View {
-    @ObservedObject var model: DoughModel
+    private static let sizes: [(name: String, minutes: Int)] = [("Small", 25), ("Medium", 50), ("Large", 90)]
+
+    @ObservedObject var model: PanificioModel
     @Environment(\.openWindow) private var openWindow
 
-    public init(model: DoughModel) {
+    public init(model: PanificioModel) {
         self.model = model
     }
 
     public var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Header(bank: model.bank, streak: model.streak)
+            Header(bank: model.bank, streak: model.streak, feeds: model.state.ledger.feeds)
             if let session = model.state.session {
-                RunningView(session: session, bank: model.bank, stakeBank: model.state.stakeBank, blocker: model.blocker, giveUp: model.giveUp)
+                RunningView(session: session, blocker: model.blocker, giveUp: model.giveUp)
             } else {
                 idle
             }
@@ -39,10 +41,10 @@ public struct MenuPanel: View {
                 Text(note).font(.callout).fixedSize(horizontal: false, vertical: true)
             }
             HStack(spacing: 6) {
-                ForEach([25, 50, 90], id: \.self) { m in
-                    Button("\(m)") { model.minutes = m }
-                        .tint(model.minutes == m ? Ink.crust : nil)
-                        .buttonStyle(.bordered)
+                ForEach(Self.sizes, id: \.minutes) { size in
+                    Button(size.name) { model.minutes = size.minutes }
+                        .tint(model.minutes == size.minutes ? Ink.sauce : nil)
+                        .buttonStyle(.bordered).controlSize(.small).fixedSize()
                 }
                 Spacer()
                 Stepper(value: $model.minutes, in: Session.minutesRange, step: Session.minutesStep) {
@@ -60,8 +62,8 @@ public struct MenuPanel: View {
 
     private var outcomeNote: String? {
         switch model.outcome {
-        case .banked(let n): return "+\(n) banked."
-        case .lost(let n): return n > 0 ? "Stopped early. \(n) dough gone." : "Stopped before the first minute. Nothing lost."
+        case .banked(let n): return "Fresh from the oven! +\(n) dough"
+        case .lost(let n): return n > 0 ? "Burnt. The oven's ready when you are." : "Stopped before the first minute. Nothing lost."
         case nil: return nil
         }
     }
@@ -94,42 +96,47 @@ public struct MenuPanel: View {
 struct Header: View {
     let bank: Int
     let streak: Streak
+    let feeds: String
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 0) {
-                Text(bank.formatted()).font(.system(size: 30, weight: .semibold, design: .rounded)).monospacedDigit()
-                Text("dough banked").font(.caption).foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(bank.formatted()).font(.system(size: 30, weight: .semibold, design: .rounded)).monospacedDigit()
+                    Text("dough banked").font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                VStack(alignment: .trailing, spacing: 0) {
+                    Text("\(streak.current)").font(.system(size: 30, weight: .semibold, design: .rounded)).monospacedDigit()
+                    Text("days open · best \(streak.best)").font(.caption).foregroundStyle(.secondary)
+                }
             }
-            Spacer()
-            VStack(alignment: .trailing, spacing: 0) {
-                Text("\(streak.current)").font(.system(size: 30, weight: .semibold, design: .rounded)).monospacedDigit()
-                Text("day streak · best \(streak.best)").font(.caption).foregroundStyle(.secondary)
-            }
+            Text("Your bakery feeds \(feeds)").font(.caption).foregroundStyle(.secondary)
         }
     }
 }
 
 struct RunningView: View {
     let session: Session
-    let bank: Int
-    let stakeBank: Bool
     @ObservedObject var blocker: Blocker
     let giveUp: @MainActor () -> Void
     @State private var confirming = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(clock(session.left)).font(.system(size: 44, weight: .semibold, design: .rounded)).monospacedDigit()
-            ProgressView(value: session.progress).tint(Ink.crust)
+            HStack {
+                Text(clock(session.left)).font(.system(size: 44, weight: .semibold, design: .rounded)).monospacedDigit()
+                Spacer()
+                LoafTimer(progress: session.progress)
+            }
             Text("+\(session.earned) dough rising, paid when the timer ends").font(.callout).foregroundStyle(.secondary)
             if !blocker.blind.isEmpty {
-                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Dough in System Settings › Privacy & Security.",
+                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Panificio in System Settings › Privacy & Security.",
                       systemImage: "exclamationmark.triangle")
                     .font(.caption).fixedSize(horizontal: false, vertical: true)
             }
             if confirming {
-                Text(stakeBank ? "Lose \(session.earned) dough and your \(bank.formatted()) banked?" : "Lose \(session.earned) dough?")
+                Text("Lose \(session.earned) dough?")
                     .font(.callout.weight(.semibold))
                 HStack {
                     Button("Keep going") { confirming = false }
@@ -139,6 +146,41 @@ struct RunningView: View {
             } else {
                 Button("Give up…") { confirming = true }
             }
+        }
+    }
+}
+
+/// The session as a round loaf: a slice goes red every eighth of the way. It's drawn from the clock, with no animation of its
+/// own, so it changes too rarely to pull the eye.
+struct LoafTimer: View {
+    let progress: Double
+
+    static func slices(_ progress: Double) -> Int { min(8, Int(progress * 8)) }
+
+    var body: some View {
+        ZStack {
+            ForEach(0 ..< 8, id: \.self) { i in
+                Slice(index: i).fill(i < Self.slices(progress) ? AnyShapeStyle(Ink.sauce) : AnyShapeStyle(.quaternary))
+            }
+        }
+        .frame(width: 56, height: 56)
+        .accessibilityElement()
+        .accessibilityLabel("Session progress")
+        .accessibilityValue("\(Self.slices(progress)) of 8 slices")
+    }
+
+    private struct Slice: Shape {
+        let index: Int
+
+        func path(in rect: CGRect) -> Path {
+            let centre = CGPoint(x: rect.midX, y: rect.midY)
+            let start = Double(index) * 45 - 90
+            var path = Path()
+            path.move(to: centre)
+            path.addArc(center: centre, radius: min(rect.width, rect.height) / 2, startAngle: .degrees(start + 2),
+                        endAngle: .degrees(start + 43), clockwise: false)
+            path.closeSubpath()
+            return path
         }
     }
 }
@@ -184,7 +226,7 @@ struct Histogram: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 UnevenRoundedRectangle(topLeadingRadius: minutes > 0 ? 3 : 0, topTrailingRadius: minutes > 0 ? 3 : 0)
-                    .fill(minutes > 0 ? AnyShapeStyle(Ink.crust.opacity(hovered == nil || hovered == i ? 1 : 0.55)) : AnyShapeStyle(.quaternary))
+                    .fill(minutes > 0 ? AnyShapeStyle(Ink.sauce.opacity(hovered == nil || hovered == i ? 1 : 0.55)) : AnyShapeStyle(.quaternary))
                     .frame(height: minutes > 0 ? max(3, box.size.height * CGFloat(minutes) / CGFloat(peak)) : 2)
             }
         }

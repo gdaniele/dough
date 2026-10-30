@@ -1,5 +1,5 @@
 import XCTest
-@testable import DoughCore
+@testable import PanificioCore
 
 final class LedgerTests: XCTestCase {
     private var calendar: Calendar = {
@@ -32,15 +32,20 @@ final class LedgerTests: XCTestCase {
 
     func testGivingUpLosesTheSessionAndKeepsTheBank() {
         var ledger = Ledger(bank: 100)
-        XCTAssertEqual(ledger.giveUp(session(minutes: 50, watched: 2940), at: day(1), stakeBank: false), 49)
+        XCTAssertEqual(ledger.giveUp(session(minutes: 50, watched: 2940), at: day(1)), 49)
         XCTAssertEqual(ledger.bank, 100)
         XCTAssertFalse(ledger.entries[0].completed)
     }
 
-    func testGivingUpOnTheWholeBankStakeEmptiesIt() {
-        var ledger = Ledger(bank: 100)
-        XCTAssertEqual(ledger.giveUp(session(minutes: 50, watched: 600), at: day(1), stakeBank: true), 110)
-        XCTAssertEqual(ledger.bank, 0)
+    func testTheBakeryGrowsWithFinishedDoughAndNeverShrinks() {
+        var ledger = Ledger(entries: [done(on: 1, minutes: 499)])
+        XCTAssertEqual(ledger.feeds, "you")
+        ledger.entries.append(done(on: 2, minutes: 1))
+        XCTAssertEqual(ledger.feeds, "your friends")
+        ledger.giveUp(session(minutes: 50, watched: 600), at: day(3))
+        XCTAssertEqual(ledger.feeds, "your friends")
+        ledger.entries.append(done(on: 4, minutes: 49_500))
+        XCTAssertEqual(ledger.feeds, "your city")
     }
 
     func testBarsAddUpCompletedMinutesByDayOldestFirst() {

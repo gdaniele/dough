@@ -1,5 +1,5 @@
 import XCTest
-@testable import DoughCore
+@testable import PanificioCore
 
 final class StoreTests: XCTestCase {
     private var dir: URL!
@@ -23,7 +23,6 @@ final class StoreTests: XCTestCase {
         let now = Date(timeIntervalSince1970: 1_800_000_000)
         state.ledger = Ledger(bank: 120, entries: [Entry(startedAt: now, endedAt: now, minutes: 25, completed: true)])
         state.session = Session(minutes: 50, rules: .starter, now: now)
-        state.stakeBank = true
         try store.save(state)
         XCTAssertEqual(store.load(), state)
     }

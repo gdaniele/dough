@@ -1,5 +1,5 @@
 import AppKit
-import DoughCore
+import PanificioCore
 import SwiftUI
 
 public enum Outcome: Equatable {
@@ -9,7 +9,7 @@ public enum Outcome: Equatable {
 
 /// The app's one source of truth: holds the state, runs the session clock, starts and stops the blocker.
 @MainActor
-public final class DoughModel: ObservableObject {
+public final class PanificioModel: ObservableObject {
     @Published public private(set) var state: AppState
     /// Ticks while a session runs, so the menu bar and the clock redraw.
     @Published public private(set) var now = Date()
@@ -38,7 +38,7 @@ public final class DoughModel: ObservableObject {
     /// The menu bar: the bank, or the time left and what's at stake.
     public var menuText: String {
         guard let s = state.session else { return "🍞 \(bank)" }
-        return "🍞 \(clock(s.left)) · +\(s.earned)"
+        return "🔥 \(clock(s.left)) · +\(s.earned)"
     }
 
     // The settings don't change while a session runs: it keeps its own copy of the rules anyway.
@@ -46,11 +46,6 @@ public final class DoughModel: ObservableObject {
     public var rules: BlockRules {
         get { state.rules }
         set { guard !running else { return }; state.rules = newValue; save() }
-    }
-
-    public var stakeBank: Bool {
-        get { state.stakeBank }
-        set { guard !running else { return }; state.stakeBank = newValue; save() }
     }
 
     public var minutes: Int {
@@ -70,7 +65,7 @@ public final class DoughModel: ObservableObject {
     /// All or nothing: ends the session with no pay.
     public func giveUp() {
         guard let session = state.session else { return }
-        outcome = .lost(state.ledger.giveUp(session, at: Date(), stakeBank: state.stakeBank))
+        outcome = .lost(state.ledger.giveUp(session, at: Date()))
         end()
     }
 
@@ -106,12 +101,12 @@ public final class DoughModel: ObservableObject {
         }
         outcome = .banked(state.ledger.complete(session, at: now))
         end()
-        NSSound(named: NSSound.Name("Hero"))?.play()
+        NSSound(named: NSSound.Name("Glass"))?.play()
     }
 
     private func save() {
         savedAt = Date()
-        do { try store.save(state) } catch { NSLog("Dough couldn't save: \(error)") }
+        do { try store.save(state) } catch { NSLog("Panificio couldn't save: \(error)") }
     }
 }
 
@@ -124,12 +119,12 @@ func hours(_ minutes: Int) -> String {
     minutes < 60 ? "\(minutes) min" : minutes % 60 == 0 ? "\(minutes / 60) h" : "\(minutes / 60) h \(String(format: "%02d", minutes % 60))"
 }
 
-/// The colours. One crust hue for the marks, a darker step of it under the white label of a prominent button in both
+/// The colours. One tomato hue for the marks, a darker step of it under the white label of a prominent button in both
 /// modes, and the cover's dark ground.
 enum Ink {
-    static let crust = Color(light: 0xA3560F, dark: 0xE9A44B)
-    static let button = Color(light: 0xA3560F, dark: 0xA3560F)
-    static let cover = Color(light: 0x1E1710, dark: 0x1E1710)
+    static let sauce = Color(light: 0xB3261E, dark: 0xFF6B5E)
+    static let button = Color(light: 0xB3261E, dark: 0xB3261E)
+    static let cover = Color(light: 0x1F0F0D, dark: 0x1F0F0D)
 }
 
 private extension Color {

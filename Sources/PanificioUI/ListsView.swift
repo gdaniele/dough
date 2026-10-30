@@ -1,14 +1,14 @@
-import DoughCore
+import PanificioCore
 import SwiftUI
 
-/// The block lists and the stake. All of it locks while a session runs.
+/// The block lists. They lock while a session runs.
 public struct ListsView: View {
-    @ObservedObject var model: DoughModel
+    @ObservedObject var model: PanificioModel
     @State private var siteText = ""
     @State private var choices: [AppChoice] = []
     @State private var search = ""
 
-    public init(model: DoughModel) {
+    public init(model: PanificioModel) {
         self.model = model
     }
 
@@ -20,12 +20,6 @@ public struct ListsView: View {
             Group {
                 sites
                 apps
-                Toggle(isOn: $model.stakeBank) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Stake the whole bank")
-                        Text("Giving up empties the bank as well as the session.").font(.caption).foregroundStyle(.secondary)
-                    }
-                }
             }
             .disabled(model.running)
         }
@@ -83,8 +77,8 @@ public struct ListsView: View {
     private var siteHint: String {
         switch model.rules.siteMode {
         case .off: return "Browsers open any site."
-        case .block: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open any site but these, or their subdomains. One a line. macOS asks to let Dough see each browser the first time."
-        case .only: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open these sites and nothing else. One a line. macOS asks to let Dough see each browser the first time. Use another browser? Block it under Apps."
+        case .block: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open any site but these, or their subdomains. One a line. macOS asks to let Panificio see each browser the first time."
+        case .only: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open these sites and nothing else. One a line. macOS asks to let Panificio see each browser the first time. Use another browser? Block it under Apps."
         }
     }
 
