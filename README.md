@@ -40,6 +40,8 @@ Dough asks for these only when a session has to read a browser:
 
 If you turn one down, the running session tells you which browser it can't see. Blocking apps needs no permission.
 
+Each build counts as a new app to macOS, so a permission can look on and not work after you update. If Firefox stops being blocked, remove Dough from System Settings › Privacy & Security › Accessibility and let it ask again.
+
 ## How blocking works
 
 Dough doesn't use root, the hosts file or a network filter. A blocked app is hidden as soon as it comes to the front, and a full-screen cover goes over it. For websites, Dough checks the front browser's address once a second and covers a blocked page.

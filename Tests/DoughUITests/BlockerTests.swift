@@ -133,4 +133,11 @@ final class ModelTests: XCTestCase {
         XCTAssertEqual(clock(3599), "59:59")
         XCTAssertEqual(clock(3661), "1:01:01")
     }
+
+    func testFirefoxsAddressBarIsFoundWhicheverRoleItHas() {
+        XCTAssertTrue(Blocker.isAddressBar(role: "AXComboBox", words: "urlbar-input search with google or enter address"))
+        XCTAssertTrue(Blocker.isAddressBar(role: "AXTextField", words: "urlbar-input"))
+        XCTAssertFalse(Blocker.isAddressBar(role: "AXComboBox", words: "search"))
+        XCTAssertFalse(Blocker.isAddressBar(role: "AXGroup", words: "urlbar"))
+    }
 }

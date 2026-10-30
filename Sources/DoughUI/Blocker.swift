@@ -26,6 +26,7 @@ public final class Blocker: ObservableObject {
     private var siteTimer: Timer?
     /// The browser whose page the cover is over, if it's a site.
     private var coveredBrowser: String?
+    private var askedForAccessibility = false
 
     public init() {}
 
@@ -120,10 +121,16 @@ public final class Blocker: ObservableObject {
         if denied { blind.insert(name) } else { blind.remove(name) }
     }
 
-    /// Firefox's address bar, through Accessibility: the focused window's text field whose id or description says url
-    /// or address. Asks for the Accessibility permission the first time.
+    /// Firefox's address bar, through Accessibility: the focused window's text field or combo box (Firefox 158's bar is
+    /// one) whose id or description says url or address.
+    static func isAddressBar(role: String?, words: String) -> Bool {
+        (role == kAXTextFieldRole as String || role == kAXComboBoxRole as String) && (words.contains("url") || words.contains("address"))
+    }
+
+    /// Asks for the Accessibility permission once per launch; the panel names Firefox if it's turned down.
     private func firefoxAddress(pid: pid_t, app browser: NSRunningApplication) -> String? {
-        let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true] as CFDictionary
+        let opts = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: !askedForAccessibility] as CFDictionary
+        askedForAccessibility = true
         let trusted = AXIsProcessTrustedWithOptions(opts)
         see(browser, denied: !trusted)
         guard trusted else { return nil }
@@ -134,12 +141,13 @@ public final class Blocker: ObservableObject {
         func find(_ el: AXUIElement, _ depth: Int) -> String? {
             seen += 1
             if depth > 14 || seen > 600 { return nil }
-            var role: CFTypeRef?, ident: CFTypeRef?, desc: CFTypeRef?
+            var role: CFTypeRef?, ident: CFTypeRef?, dom: CFTypeRef?, desc: CFTypeRef?
             AXUIElementCopyAttributeValue(el, kAXRoleAttribute as CFString, &role)
             AXUIElementCopyAttributeValue(el, kAXIdentifierAttribute as CFString, &ident)
+            AXUIElementCopyAttributeValue(el, "AXDOMIdentifier" as CFString, &dom)
             AXUIElementCopyAttributeValue(el, kAXDescriptionAttribute as CFString, &desc)
-            let words = (((ident as? String) ?? "") + " " + ((desc as? String) ?? "")).lowercased()
-            if (role as? String) == (kAXTextFieldRole as String), words.contains("url") || words.contains("address") {
+            let words = [ident, dom, desc].map { ($0 as? String) ?? "" }.joined(separator: " ").lowercased()
+            if Self.isAddressBar(role: role as? String, words: words) {
                 var focused: CFTypeRef?
                 AXUIElementCopyAttributeValue(el, kAXFocusedAttribute as CFString, &focused)
                 // Being typed in: never judged half-way.
