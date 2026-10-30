@@ -1,2 +1,75 @@
-# dough
-A macOS menu bar focus timer. Block apps and sites, earn dough for every minute, lose it if you stop.
+# Dough
+
+A macOS menu bar focus timer that pays you to stay put.
+
+Pick a length and start. Your block lists switch on, and every minute adds a point of dough. Let the timer run out and it's banked. Stop early and it's gone.
+
+## What it does
+
+- **Sessions** from 5 minutes to 8 hours, with the time left and what's at stake in the menu bar.
+- **Block lists** for websites and for apps. Each is off, a deny list (*Block these*) or an allow list (*Only these*).
+- **All or nothing.** One point of dough for every minute, paid only when the timer ends.
+- **Stake the whole bank**, if you want it to hurt: an optional setting where giving up empties the bank as well.
+- **Streak and histogram.** Days in a row with a finished session, and your focus minutes over the last 14 days.
+
+Lists lock while a session runs, and a session keeps its own copy of them, so you can't let something through halfway.
+
+## Install
+
+Dough needs macOS 14 or later.
+
+Build it yourself:
+
+```sh
+git clone https://github.com/gdaniele/dough.git
+cd dough
+scripts/build-app.sh
+open build/Dough.app
+```
+
+Or download a zip from [Releases](https://github.com/gdaniele/dough/releases). Those builds aren't notarized, so macOS refuses them at first: try to open the app, then go to System Settings › Privacy & Security and choose **Open Anyway**.
+
+## Permissions
+
+Dough asks for these only when a session has to read a browser:
+
+| Permission | Why |
+|---|---|
+| Automation (each browser) | Reads the front tab's address in Safari and Chrome-family browsers |
+| Accessibility | Reads Firefox's address bar, which has no AppleScript |
+
+If you turn one down, the running session tells you which browser it can't see. Blocking apps needs no permission.
+
+Each build counts as a new app to macOS, so a permission can look on and not work after you update. If Firefox stops being blocked, remove Dough from System Settings › Privacy & Security › Accessibility and let it ask again.
+
+## How blocking works
+
+Dough doesn't use root, the hosts file or a network filter. A blocked app is hidden as soon as it comes to the front, and a full-screen cover goes over it. For websites, Dough checks the front browser's address once a second and covers a blocked page.
+
+That makes Dough a commitment device, not a prison:
+
+- **Force quitting stops the blocking.** It earns nothing, though. The session's clock only runs while the app is watching, so sleep, a force quit or a changed system clock can't run it down. The session picks up where it stopped when Dough is back.
+- **Only Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox are read.** On a website deny list, any other browser gets through, so add it to the apps list.
+- **The check covers the front window only**, once a second, so a blocked page can show for a moment.
+- **The cover goes on one display**, the one with the app you're using.
+- **Other apps' web views aren't seen.** A site inside an Electron app is not a browser tab.
+
+If you want something you can't get out of, use [SelfControl](https://github.com/SelfControlApp/selfcontrol).
+
+## Privacy
+
+Dough has no account and makes no network calls. Everything it keeps is one JSON file on your Mac, at `~/Library/Application Support/Dough/state.json`. Browser addresses are read to make a decision and are never stored.
+
+## Develop
+
+`DoughCore` holds the rules, the session clock and the bank, and it's Foundation only. `DoughUI` holds the blocker and the views.
+
+```sh
+swift test
+DOUGH_E2E=1 swift test                # also hides and restores a real TextEdit
+SNAPSHOT_DIR=snapshots swift test     # also writes the views out as PNGs
+```
+
+## License
+
+MIT

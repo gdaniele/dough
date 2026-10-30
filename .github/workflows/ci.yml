@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test
+        run: swift test
+        env:
+          DOUGH_E2E: "1"
+          SNAPSHOT_DIR: ${{ github.workspace }}/snapshots
+      - name: Build the app
+        run: scripts/build-app.sh
+      - name: Launch it
+        run: |
+          open build/Dough.app
+          sleep 5
+          pgrep -x Dough
+          pkill -x Dough
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: snapshots
+          path: snapshots
+          if-no-files-found: ignore

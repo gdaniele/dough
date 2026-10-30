@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: swift test
+      - run: scripts/build-app.sh "${GITHUB_REF_NAME#v}"
+      - name: Zip and publish
+        run: |
+          ditto -c -k --keepParent build/Dough.app "Dough-$GITHUB_REF_NAME.zip"
+          gh release create "$GITHUB_REF_NAME" "Dough-$GITHUB_REF_NAME.zip" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
