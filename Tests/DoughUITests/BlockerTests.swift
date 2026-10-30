@@ -97,10 +97,8 @@ final class ModelTests: XCTestCase {
         m.start()
         m.rules = BlockRules(siteMode: .block, sites: ["x.com"])
         m.minutes = 90
-        m.stakeBank = true
         XCTAssertEqual(m.rules, BlockRules())
         XCTAssertEqual(m.minutes, 50)
-        XCTAssertFalse(m.stakeBank)
         m.giveUp()
     }
 

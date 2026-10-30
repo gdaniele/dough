@@ -8,8 +8,7 @@ Pick a length and start. Your block lists switch on, and every minute adds a poi
 
 - **Sessions** from 5 minutes to 8 hours, with the time left and what's at stake in the menu bar.
 - **Block lists** for websites and for apps. Each is off, a deny list (*Block these*) or an allow list (*Only these*).
-- **All or nothing.** One point of dough for every minute, paid only when the timer ends.
-- **Stake the whole bank**, if you want it to hurt: an optional setting where giving up empties the bank as well.
+- **All or nothing.** One point of dough for every minute, paid only when the timer ends. Stop early and that session's dough is gone. The bank is safe.
 - **Streak and histogram.** Days in a row with a finished session, and your focus minutes over the last 14 days.
 
 Lists lock while a session runs, and a session keeps its own copy of them, so you can't let something through halfway.

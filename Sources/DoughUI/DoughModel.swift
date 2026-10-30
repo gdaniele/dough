@@ -48,11 +48,6 @@ public final class DoughModel: ObservableObject {
         set { guard !running else { return }; state.rules = newValue; save() }
     }
 
-    public var stakeBank: Bool {
-        get { state.stakeBank }
-        set { guard !running else { return }; state.stakeBank = newValue; save() }
-    }
-
     public var minutes: Int {
         get { state.minutes }
         set { guard !running else { return }; state.minutes = newValue; save() }
@@ -70,7 +65,7 @@ public final class DoughModel: ObservableObject {
     /// All or nothing: ends the session with no pay.
     public func giveUp() {
         guard let session = state.session else { return }
-        outcome = .lost(state.ledger.giveUp(session, at: Date(), stakeBank: state.stakeBank))
+        outcome = .lost(state.ledger.giveUp(session, at: Date()))
         end()
     }
 

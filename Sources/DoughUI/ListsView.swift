@@ -1,7 +1,7 @@
 import DoughCore
 import SwiftUI
 
-/// The block lists and the stake. All of it locks while a session runs.
+/// The block lists. They lock while a session runs.
 public struct ListsView: View {
     @ObservedObject var model: DoughModel
     @State private var siteText = ""
@@ -20,12 +20,6 @@ public struct ListsView: View {
             Group {
                 sites
                 apps
-                Toggle(isOn: $model.stakeBank) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Stake the whole bank")
-                        Text("Giving up empties the bank as well as the session.").font(.caption).foregroundStyle(.secondary)
-                    }
-                }
             }
             .disabled(model.running)
         }

@@ -35,8 +35,8 @@ public struct Streak: Equatable, Sendable {
     }
 }
 
-/// The bank and the history. All or nothing: a session pays when it runs to its end. Giving up pays nothing, and on
-/// the whole-bank stake it empties the bank too.
+/// The bank and the history. All or nothing: a session pays when it runs to its end. Giving up pays nothing, and the
+/// bank is never touched.
 public struct Ledger: Codable, Equatable, Sendable {
     public var bank = 0
     public var entries: [Entry] = []
@@ -55,13 +55,11 @@ public struct Ledger: Codable, Equatable, Sendable {
         return paid
     }
 
-    /// Ends a session early; returns everything that was lost.
+    /// Ends a session early; returns what it had earned, which is lost.
     @discardableResult
-    public mutating func giveUp(_ session: Session, at end: Date, stakeBank: Bool) -> Int {
-        let lost = session.earned + (stakeBank ? bank : 0)
-        if stakeBank { bank = 0 }
+    public mutating func giveUp(_ session: Session, at end: Date) -> Int {
         entries.append(Entry(startedAt: session.startedAt, endedAt: end, minutes: session.earned, completed: false))
-        return lost
+        return session.earned
     }
 
     /// Completed minutes a day, oldest first, for the `days` days ending on `today`. A session counts on the day it ended.

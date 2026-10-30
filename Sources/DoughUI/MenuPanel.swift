@@ -15,7 +15,7 @@ public struct MenuPanel: View {
         VStack(alignment: .leading, spacing: 14) {
             Header(bank: model.bank, streak: model.streak)
             if let session = model.state.session {
-                RunningView(session: session, bank: model.bank, stakeBank: model.state.stakeBank, blocker: model.blocker, giveUp: model.giveUp)
+                RunningView(session: session, blocker: model.blocker, giveUp: model.giveUp)
             } else {
                 idle
             }
@@ -112,8 +112,6 @@ struct Header: View {
 
 struct RunningView: View {
     let session: Session
-    let bank: Int
-    let stakeBank: Bool
     @ObservedObject var blocker: Blocker
     let giveUp: @MainActor () -> Void
     @State private var confirming = false
@@ -129,7 +127,7 @@ struct RunningView: View {
                     .font(.caption).fixedSize(horizontal: false, vertical: true)
             }
             if confirming {
-                Text(stakeBank ? "Lose \(session.earned) dough and your \(bank.formatted()) banked?" : "Lose \(session.earned) dough?")
+                Text("Lose \(session.earned) dough?")
                     .font(.callout.weight(.semibold))
                 HStack {
                     Button("Keep going") { confirming = false }

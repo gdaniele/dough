@@ -5,14 +5,12 @@ public struct AppState: Codable, Equatable, Sendable {
     public var ledger = Ledger()
     public var rules = BlockRules.starter
     public var session: Session?
-    /// Giving up also empties the bank.
-    public var stakeBank = false
     public var minutes = 50
 
     public init() {}
 
     private enum CodingKeys: String, CodingKey {
-        case ledger, rules, session, stakeBank, minutes
+        case ledger, rules, session, minutes
     }
 
     /// Fields a future version adds fall back to their defaults, so an upgrade never reads an old file as corrupt.
@@ -21,7 +19,6 @@ public struct AppState: Codable, Equatable, Sendable {
         ledger = try c.decodeIfPresent(Ledger.self, forKey: .ledger) ?? Ledger()
         rules = try c.decodeIfPresent(BlockRules.self, forKey: .rules) ?? .starter
         session = try c.decodeIfPresent(Session.self, forKey: .session)
-        stakeBank = try c.decodeIfPresent(Bool.self, forKey: .stakeBank) ?? false
         minutes = try c.decodeIfPresent(Int.self, forKey: .minutes) ?? 50
     }
 }
