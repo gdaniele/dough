@@ -1,5 +1,5 @@
 import AppKit
-import PizzeriaCore
+import PanificioCore
 import SwiftUI
 
 public enum Outcome: Equatable {
@@ -9,7 +9,7 @@ public enum Outcome: Equatable {
 
 /// The app's one source of truth: holds the state, runs the session clock, starts and stops the blocker.
 @MainActor
-public final class PizzeriaModel: ObservableObject {
+public final class PanificioModel: ObservableObject {
     @Published public private(set) var state: AppState
     /// Ticks while a session runs, so the menu bar and the clock redraw.
     @Published public private(set) var now = Date()
@@ -37,7 +37,7 @@ public final class PizzeriaModel: ObservableObject {
 
     /// The menu bar: the bank, or the time left and what's at stake.
     public var menuText: String {
-        guard let s = state.session else { return "🍕 \(bank)" }
+        guard let s = state.session else { return "🍞 \(bank)" }
         return "🔥 \(clock(s.left)) · +\(s.earned)"
     }
 
@@ -106,7 +106,7 @@ public final class PizzeriaModel: ObservableObject {
 
     private func save() {
         savedAt = Date()
-        do { try store.save(state) } catch { NSLog("Pizzeria couldn't save: \(error)") }
+        do { try store.save(state) } catch { NSLog("Panificio couldn't save: \(error)") }
     }
 }
 

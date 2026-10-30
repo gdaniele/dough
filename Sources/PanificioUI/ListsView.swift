@@ -1,14 +1,14 @@
-import PizzeriaCore
+import PanificioCore
 import SwiftUI
 
 /// The block lists. They lock while a session runs.
 public struct ListsView: View {
-    @ObservedObject var model: PizzeriaModel
+    @ObservedObject var model: PanificioModel
     @State private var siteText = ""
     @State private var choices: [AppChoice] = []
     @State private var search = ""
 
-    public init(model: PizzeriaModel) {
+    public init(model: PanificioModel) {
         self.model = model
     }
 
@@ -77,8 +77,8 @@ public struct ListsView: View {
     private var siteHint: String {
         switch model.rules.siteMode {
         case .off: return "Browsers open any site."
-        case .block: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open any site but these, or their subdomains. One a line. macOS asks to let Pizzeria see each browser the first time."
-        case .only: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open these sites and nothing else. One a line. macOS asks to let Pizzeria see each browser the first time. Use another browser? Block it under Apps."
+        case .block: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open any site but these, or their subdomains. One a line. macOS asks to let Panificio see each browser the first time."
+        case .only: return "Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox open these sites and nothing else. One a line. macOS asks to let Panificio see each browser the first time. Use another browser? Block it under Apps."
         }
     }
 

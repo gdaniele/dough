@@ -1,5 +1,5 @@
 import XCTest
-@testable import PizzeriaCore
+@testable import PanificioCore
 
 final class SessionTests: XCTestCase {
     private let start = Date(timeIntervalSince1970: 1_800_000_000)

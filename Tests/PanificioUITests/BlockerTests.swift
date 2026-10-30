@@ -1,9 +1,9 @@
 import AppKit
-import PizzeriaCore
+import PanificioCore
 import XCTest
-@testable import PizzeriaUI
+@testable import PanificioUI
 
-/// Runs the blocker against a real app, so it hides things on the machine it runs on: only with PIZZERIA_E2E set (CI sets it).
+/// Runs the blocker against a real app, so it hides things on the machine it runs on: only with PANIFICIO_E2E set (CI sets it).
 @MainActor
 final class BlockerTests: XCTestCase {
     private func wait(_ what: String, until done: () -> Bool) async throws {
@@ -15,7 +15,7 @@ final class BlockerTests: XCTestCase {
     }
 
     private func textEdit() async throws -> NSRunningApplication {
-        try XCTSkipUnless(ProcessInfo.processInfo.environment["PIZZERIA_E2E"] != nil, "Set PIZZERIA_E2E to run")
+        try XCTSkipUnless(ProcessInfo.processInfo.environment["PANIFICIO_E2E"] != nil, "Set PANIFICIO_E2E to run")
         _ = NSApplication.shared
         let url = URL(fileURLWithPath: "/System/Applications/TextEdit.app")
         let app = try await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
@@ -74,14 +74,14 @@ final class BlockerTests: XCTestCase {
 
 @MainActor
 final class ModelTests: XCTestCase {
-    private func model(_ state: AppState = AppState()) throws -> (PizzeriaModel, Store) {
+    private func model(_ state: AppState = AppState()) throws -> (PanificioModel, Store) {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".json")
         addTeardownBlock { try? FileManager.default.removeItem(at: url) }
         let store = Store(url: url)
         var quiet = state
         quiet.rules = BlockRules()
         try store.save(quiet)
-        return (PizzeriaModel(store: store), store)
+        return (PanificioModel(store: store), store)
     }
 
     func testGivingUpEndsTheSessionAndPaysNothing() throws {
@@ -123,17 +123,17 @@ final class ModelTests: XCTestCase {
         var state = AppState()
         state.ledger.bank = 120
         let (m, _) = try model(state)
-        XCTAssertEqual(m.menuText, "🍕 120")
+        XCTAssertEqual(m.menuText, "🍞 120")
         m.start()
         XCTAssertEqual(m.menuText, "🔥 50:00 · +0")
         m.giveUp()
     }
 
-    func testThePizzaGainsASliceEveryEighth() {
-        XCTAssertEqual(PizzaTimer.slices(0), 0)
-        XCTAssertEqual(PizzaTimer.slices(0.12), 0)
-        XCTAssertEqual(PizzaTimer.slices(0.5), 4)
-        XCTAssertEqual(PizzaTimer.slices(1), 8)
+    func testTheLoafGainsASliceEveryEighth() {
+        XCTAssertEqual(LoafTimer.slices(0), 0)
+        XCTAssertEqual(LoafTimer.slices(0.12), 0)
+        XCTAssertEqual(LoafTimer.slices(0.5), 4)
+        XCTAssertEqual(LoafTimer.slices(1), 8)
     }
 
     func testClock() {

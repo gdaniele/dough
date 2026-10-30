@@ -46,11 +46,11 @@ public struct Ledger: Codable, Equatable, Sendable {
         self.entries = entries
     }
 
-    /// Who the pizzeria feeds, by dough from finished sessions.
+    /// Who the bakery feeds, by dough from finished sessions.
     public static let ladder: [(dough: Int, who: String)] = [(500, "your friends"), (2000, "your coworkers"),
                                                              (10000, "your neighborhood"), (50000, "your city")]
 
-    /// Pizzeria from every finished session. It only grows, so the pizzeria does too.
+    /// Dough from every finished session. It only grows, so the bakery does too.
     public var lifetime: Int { entries.filter(\.completed).map(\.minutes).reduce(0, +) }
 
     public var feeds: String { Self.ladder.last(where: { lifetime >= $0.dough })?.who ?? "you" }

@@ -1,18 +1,18 @@
 // swift-tools-version:5.9
-// Pizzeria, a macOS menu bar focus timer.
-// - PizzeriaCore: the rules, the session clock, the bank and the file on disk. Foundation only, so it's all unit tested.
-// - PizzeriaUI: the blocker and the SwiftUI views.
-// - Pizzeria: the app's entry point. Build the .app with scripts/build-app.sh.
+// Panificio, a macOS menu bar focus timer.
+// - PanificioCore: the rules, the session clock, the bank and the file on disk. Foundation only, so it's all unit tested.
+// - PanificioUI: the blocker and the SwiftUI views.
+// - Panificio: the app's entry point. Build the .app with scripts/build-app.sh.
 import PackageDescription
 
 let package = Package(
-    name: "Pizzeria",
+    name: "Panificio",
     platforms: [.macOS(.v14)],
     targets: [
-        .target(name: "PizzeriaCore"),
-        .target(name: "PizzeriaUI", dependencies: ["PizzeriaCore"]),
-        .executableTarget(name: "Pizzeria", dependencies: ["PizzeriaUI"]),
-        .testTarget(name: "PizzeriaCoreTests", dependencies: ["PizzeriaCore"]),
-        .testTarget(name: "PizzeriaUITests", dependencies: ["PizzeriaCore", "PizzeriaUI"]),
+        .target(name: "PanificioCore"),
+        .target(name: "PanificioUI", dependencies: ["PanificioCore"]),
+        .executableTarget(name: "Panificio", dependencies: ["PanificioUI"]),
+        .testTarget(name: "PanificioCoreTests", dependencies: ["PanificioCore"]),
+        .testTarget(name: "PanificioUITests", dependencies: ["PanificioCore", "PanificioUI"]),
     ]
 )

@@ -1,15 +1,15 @@
 import AppKit
-import PizzeriaCore
+import PanificioCore
 import SwiftUI
 
 /// The menu bar's panel: the bank and the streak, the session, the last two weeks.
 public struct MenuPanel: View {
     private static let sizes: [(name: String, minutes: Int)] = [("Small", 25), ("Medium", 50), ("Large", 90)]
 
-    @ObservedObject var model: PizzeriaModel
+    @ObservedObject var model: PanificioModel
     @Environment(\.openWindow) private var openWindow
 
-    public init(model: PizzeriaModel) {
+    public init(model: PanificioModel) {
         self.model = model
     }
 
@@ -62,7 +62,7 @@ public struct MenuPanel: View {
 
     private var outcomeNote: String? {
         switch model.outcome {
-        case .banked(let n): return "Order up! +\(n) dough"
+        case .banked(let n): return "Fresh from the oven! +\(n) dough"
         case .lost(let n): return n > 0 ? "Burnt. The oven's ready when you are." : "Stopped before the first minute. Nothing lost."
         case nil: return nil
         }
@@ -111,7 +111,7 @@ struct Header: View {
                     Text("days open · best \(streak.best)").font(.caption).foregroundStyle(.secondary)
                 }
             }
-            Text("Your pizzeria feeds \(feeds)").font(.caption).foregroundStyle(.secondary)
+            Text("Your bakery feeds \(feeds)").font(.caption).foregroundStyle(.secondary)
         }
     }
 }
@@ -127,11 +127,11 @@ struct RunningView: View {
             HStack {
                 Text(clock(session.left)).font(.system(size: 44, weight: .semibold, design: .rounded)).monospacedDigit()
                 Spacer()
-                PizzaTimer(progress: session.progress)
+                LoafTimer(progress: session.progress)
             }
             Text("+\(session.earned) dough rising, paid when the timer ends").font(.callout).foregroundStyle(.secondary)
             if !blocker.blind.isEmpty {
-                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Pizzeria in System Settings › Privacy & Security.",
+                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Panificio in System Settings › Privacy & Security.",
                       systemImage: "exclamationmark.triangle")
                     .font(.caption).fixedSize(horizontal: false, vertical: true)
             }
@@ -150,9 +150,9 @@ struct RunningView: View {
     }
 }
 
-/// The session as a pizza: a slice goes red every eighth of the way. It's drawn from the clock, with no animation of its
+/// The session as a round loaf: a slice goes red every eighth of the way. It's drawn from the clock, with no animation of its
 /// own, so it changes too rarely to pull the eye.
-struct PizzaTimer: View {
+struct LoafTimer: View {
     let progress: Double
 
     static func slices(_ progress: Double) -> Int { min(8, Int(progress * 8)) }

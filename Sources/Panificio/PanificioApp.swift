@@ -1,9 +1,9 @@
-import PizzeriaUI
+import PanificioUI
 import SwiftUI
 
 @main
-struct PizzeriaApp: App {
-    @StateObject private var model = PizzeriaModel()
+struct PanificioApp: App {
+    @StateObject private var model = PanificioModel()
 
     var body: some Scene {
         // A plain Text fed by the model: a TimelineView here makes MenuBarExtra redraw its button forever.

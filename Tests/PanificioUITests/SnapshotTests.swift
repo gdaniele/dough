@@ -1,18 +1,18 @@
 import AppKit
-import PizzeriaCore
+import PanificioCore
 import SwiftUI
 import XCTest
-@testable import PizzeriaUI
+@testable import PanificioUI
 
 /// Renders the real views to PNGs. Set SNAPSHOT_DIR to keep them; CI uploads them, and docs/ holds the README's.
 @MainActor
 final class SnapshotTests: XCTestCase {
-    private func model(_ state: AppState) throws -> PizzeriaModel {
+    private func model(_ state: AppState) throws -> PanificioModel {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".json")
         addTeardownBlock { try? FileManager.default.removeItem(at: url) }
         let store = Store(url: url)
         try store.save(state)
-        return PizzeriaModel(store: store)
+        return PanificioModel(store: store)
     }
 
     private func history(_ now: Date = Date()) -> AppState {
