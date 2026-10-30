@@ -119,10 +119,17 @@ final class ModelTests: XCTestCase {
         var state = AppState()
         state.ledger.bank = 120
         let (m, _) = try model(state)
-        XCTAssertEqual(m.menuText, "🍞 120")
+        XCTAssertEqual(m.menuText, "🍕 120")
         m.start()
-        XCTAssertEqual(m.menuText, "🍞 50:00 · +0")
+        XCTAssertEqual(m.menuText, "🔥 50:00 · +0")
         m.giveUp()
+    }
+
+    func testThePizzaGainsASliceEveryEighth() {
+        XCTAssertEqual(PizzaTimer.slices(0), 0)
+        XCTAssertEqual(PizzaTimer.slices(0.12), 0)
+        XCTAssertEqual(PizzaTimer.slices(0.5), 4)
+        XCTAssertEqual(PizzaTimer.slices(1), 8)
     }
 
     func testClock() {

@@ -223,9 +223,9 @@ struct BlockCover: View {
 
     var body: some View {
         VStack(spacing: 18) {
-            Text("🍞").font(.system(size: 72))
+            Text("🍕").font(.system(size: 72))
             Text("Your dough is rising.").font(.system(size: 34, weight: .bold, design: .rounded))
-            Text("\(blocked) is blocked until the timer ends.").font(.title3)
+            Text("We don't serve \(blocked) here.").font(.title3)
             if stake > 0 {
                 Text("Stop now and \(stake) dough is gone.").font(.title3).foregroundStyle(.secondary)
             }

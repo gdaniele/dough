@@ -37,8 +37,8 @@ public final class DoughModel: ObservableObject {
 
     /// The menu bar: the bank, or the time left and what's at stake.
     public var menuText: String {
-        guard let s = state.session else { return "🍞 \(bank)" }
-        return "🍞 \(clock(s.left)) · +\(s.earned)"
+        guard let s = state.session else { return "🍕 \(bank)" }
+        return "🔥 \(clock(s.left)) · +\(s.earned)"
     }
 
     // The settings don't change while a session runs: it keeps its own copy of the rules anyway.
@@ -101,7 +101,7 @@ public final class DoughModel: ObservableObject {
         }
         outcome = .banked(state.ledger.complete(session, at: now))
         end()
-        NSSound(named: NSSound.Name("Hero"))?.play()
+        NSSound(named: NSSound.Name("Glass"))?.play()
     }
 
     private func save() {
@@ -119,12 +119,12 @@ func hours(_ minutes: Int) -> String {
     minutes < 60 ? "\(minutes) min" : minutes % 60 == 0 ? "\(minutes / 60) h" : "\(minutes / 60) h \(String(format: "%02d", minutes % 60))"
 }
 
-/// The colours. One crust hue for the marks, a darker step of it under the white label of a prominent button in both
+/// The colours. One tomato hue for the marks, a darker step of it under the white label of a prominent button in both
 /// modes, and the cover's dark ground.
 enum Ink {
-    static let crust = Color(light: 0xA3560F, dark: 0xE9A44B)
-    static let button = Color(light: 0xA3560F, dark: 0xA3560F)
-    static let cover = Color(light: 0x1E1710, dark: 0x1E1710)
+    static let sauce = Color(light: 0xB3261E, dark: 0xFF6B5E)
+    static let button = Color(light: 0xB3261E, dark: 0xB3261E)
+    static let cover = Color(light: 0x1F0F0D, dark: 0x1F0F0D)
 }
 
 private extension Color {

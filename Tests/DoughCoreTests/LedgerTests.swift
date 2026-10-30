@@ -37,6 +37,17 @@ final class LedgerTests: XCTestCase {
         XCTAssertFalse(ledger.entries[0].completed)
     }
 
+    func testThePizzeriaGrowsWithFinishedDoughAndNeverShrinks() {
+        var ledger = Ledger(entries: [done(on: 1, minutes: 499)])
+        XCTAssertEqual(ledger.feeds, "you")
+        ledger.entries.append(done(on: 2, minutes: 1))
+        XCTAssertEqual(ledger.feeds, "your friends")
+        ledger.giveUp(session(minutes: 50, watched: 600), at: day(3))
+        XCTAssertEqual(ledger.feeds, "your friends")
+        ledger.entries.append(done(on: 4, minutes: 49_500))
+        XCTAssertEqual(ledger.feeds, "your city")
+    }
+
     func testBarsAddUpCompletedMinutesByDayOldestFirst() {
         let lost = Entry(startedAt: day(29), endedAt: day(29), minutes: 40, completed: false)
         let ledger = Ledger(entries: [done(on: 28, minutes: 25), done(on: 28, minutes: 50, hour: 15), done(on: 30, minutes: 90), lost])
