@@ -124,9 +124,11 @@ func hours(_ minutes: Int) -> String {
     minutes < 60 ? "\(minutes) min" : minutes % 60 == 0 ? "\(minutes / 60) h" : "\(minutes / 60) h \(String(format: "%02d", minutes % 60))"
 }
 
-/// The colours. One crust hue for the marks and the main button, plus the cover's dark ground.
+/// The colours. One crust hue for the marks, a darker step of it under the white label of a prominent button in both
+/// modes, and the cover's dark ground.
 enum Ink {
     static let crust = Color(light: 0xA3560F, dark: 0xE9A44B)
+    static let button = Color(light: 0xA3560F, dark: 0xA3560F)
     static let cover = Color(light: 0x1E1710, dark: 0x1E1710)
 }
 

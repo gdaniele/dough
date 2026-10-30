@@ -222,7 +222,7 @@ struct BlockCover: View {
                 Text("Stop now and \(stake) dough is gone.").font(.title3).foregroundStyle(.secondary)
             }
             Button(site ? "Leave the page" : "Back to work", action: back)
-                .buttonStyle(.borderedProminent).tint(Ink.crust).controlSize(.large).padding(.top, 8)
+                .buttonStyle(.borderedProminent).tint(Ink.button).controlSize(.large).padding(.top, 8)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Ink.cover)

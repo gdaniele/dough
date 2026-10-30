@@ -53,7 +53,7 @@ public struct MenuPanel: View {
             Button(action: model.start) {
                 Text("Start · \(model.minutes) dough on the line").frame(maxWidth: .infinity)
             }
-            .buttonStyle(.borderedProminent).tint(Ink.crust).controlSize(.large)
+            .buttonStyle(.borderedProminent).tint(Ink.button).controlSize(.large)
             Text(summary).font(.caption).foregroundStyle(.secondary)
         }
     }
@@ -133,7 +133,7 @@ struct RunningView: View {
                     .font(.callout.weight(.semibold))
                 HStack {
                     Button("Keep going") { confirming = false }
-                        .buttonStyle(.borderedProminent).tint(Ink.crust)
+                        .buttonStyle(.borderedProminent).tint(Ink.button)
                     Button("Lose it", role: .destructive, action: giveUp)
                 }
             } else {
