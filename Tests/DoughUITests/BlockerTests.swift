@@ -20,7 +20,11 @@ final class BlockerTests: XCTestCase {
         let url = URL(fileURLWithPath: "/System/Applications/TextEdit.app")
         let app = try await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
         try await wait("TextEdit to launch") { app.isFinishedLaunching }
-        addTeardownBlock { app.forceTerminate() }
+        // The next test launches it again, and launching one that's still on its way out fails.
+        addTeardownBlock { [self] in
+            app.forceTerminate()
+            try await wait("TextEdit to quit") { app.isTerminated }
+        }
         return app
     }
 
