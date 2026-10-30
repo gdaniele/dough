@@ -20,7 +20,7 @@ final class BlockerTests: XCTestCase {
         let url = URL(fileURLWithPath: "/System/Applications/TextEdit.app")
         let app = try await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
         try await wait("TextEdit to launch") { app.isFinishedLaunching }
-        addTeardownBlock { @MainActor in app.forceTerminate() }
+        addTeardownBlock { app.forceTerminate() }
         return app
     }
 
@@ -33,7 +33,7 @@ final class BlockerTests: XCTestCase {
 
         app.unhide()
         try await wait("TextEdit to come back") { !app.isHidden }
-        app.activate()
+        app.activate(options: [])
         try await wait("TextEdit to hide again") { app.isHidden }
     }
 
@@ -62,7 +62,7 @@ final class BlockerTests: XCTestCase {
         try await wait("TextEdit to hide") { app.isHidden }
         blocker.stop()
         app.unhide()
-        app.activate()
+        app.activate(options: [])
         try await Task.sleep(nanoseconds: 1_000_000_000)
         XCTAssertFalse(app.isHidden)
     }

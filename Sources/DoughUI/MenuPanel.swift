@@ -115,7 +115,7 @@ struct RunningView: View {
     let bank: Int
     let stakeBank: Bool
     @ObservedObject var blocker: Blocker
-    let giveUp: () -> Void
+    let giveUp: @MainActor () -> Void
     @State private var confirming = false
 
     var body: some View {
@@ -146,7 +146,7 @@ struct RunningView: View {
 /// Completed minutes a day. One series, so no legend: the title names it, a hover reads a bar out.
 struct Histogram: View {
     let bars: [DayBar]
-    @State private var hovered: Int?
+    @State private var hovered: Int? = nil
 
     private var peak: Int { max(bars.map(\.minutes).max() ?? 0, 1) }
 
