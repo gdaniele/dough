@@ -1,15 +1,14 @@
 # Dough
 
-A macOS menu bar focus timer that pays you to stay put.
-
-Pick a length and start. Your block lists switch on, and every minute adds a point of dough. Let the timer run out and it's banked. Stop early and it's gone.
+A macOS menu bar app that helps you stay focused by blocking distracting apps. It reads your allow/deny list for both macOS applications and websites, and enforces your own rules for the amount of time you decide. You earn a point of dough for every minute you focus, but lose that session's dough if you end it early.
 
 ## What it does
 
-- **Sessions** from 5 minutes to 8 hours, with the time left and what's at stake in the menu bar.
+- **Sessions** from 5 minutes to 8 hours, or a Small, Medium or Large pizza for 25, 50 or 90 minutes, with the time left and what's at stake in the menu bar.
 - **Block lists** for websites and for apps. Each is off, a deny list (*Block these*) or an allow list (*Only these*).
 - **All or nothing.** One point of dough for every minute, paid only when the timer ends. Stop early and that session's dough is gone. The bank is safe.
 - **Streak and histogram.** Days in a row with a finished session, and your focus minutes over the last 14 days.
+- **Your pizzeria.** It feeds you at first, then your friends, your coworkers, your neighborhood and your city as finished sessions add up. It never shrinks.
 
 Lists lock while a session runs, and a session keeps its own copy of them, so you can't let something through halfway.
 

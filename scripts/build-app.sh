@@ -3,7 +3,7 @@
 # Run on a Mac:  scripts/build-app.sh && open build/Dough.app
 set -eu
 cd "$(dirname "$0")/.."
-version=${1:-0.1.0}
+version=${1:-1.0.0}
 swift build -c release --arch arm64 --arch x86_64
 bin=$(swift build -c release --arch arm64 --arch x86_64 --show-bin-path)
 app=build/Dough.app
