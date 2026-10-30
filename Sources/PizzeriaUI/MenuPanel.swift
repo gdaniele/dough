@@ -1,15 +1,15 @@
 import AppKit
-import DoughCore
+import PizzeriaCore
 import SwiftUI
 
 /// The menu bar's panel: the bank and the streak, the session, the last two weeks.
 public struct MenuPanel: View {
     private static let sizes: [(name: String, minutes: Int)] = [("Small", 25), ("Medium", 50), ("Large", 90)]
 
-    @ObservedObject var model: DoughModel
+    @ObservedObject var model: PizzeriaModel
     @Environment(\.openWindow) private var openWindow
 
-    public init(model: DoughModel) {
+    public init(model: PizzeriaModel) {
         self.model = model
     }
 
@@ -131,7 +131,7 @@ struct RunningView: View {
             }
             Text("+\(session.earned) dough rising, paid when the timer ends").font(.callout).foregroundStyle(.secondary)
             if !blocker.blind.isEmpty {
-                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Dough in System Settings › Privacy & Security.",
+                Label("Sites aren't blocked in \(blocker.blind.sorted().joined(separator: ", ")). Allow Pizzeria in System Settings › Privacy & Security.",
                       systemImage: "exclamationmark.triangle")
                     .font(.caption).fixedSize(horizontal: false, vertical: true)
             }

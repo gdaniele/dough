@@ -1,6 +1,6 @@
 import AppKit
 import ApplicationServices
-import DoughCore
+import PizzeriaCore
 import SwiftUI
 
 public struct AppChoice: Identifiable, Equatable {
@@ -14,7 +14,7 @@ public struct AppChoice: Identifiable, Equatable {
 /// No root, no hosts file, no network filter: it's a commitment device, and the stake does the rest.
 @MainActor
 public final class Blocker: ObservableObject {
-    /// Browsers macOS won't let Dough read: their sites aren't being blocked, and the user has to know.
+    /// Browsers macOS won't let Pizzeria read: their sites aren't being blocked, and the user has to know.
     @Published public private(set) var blind: Set<String> = []
     public private(set) var active = false
     /// What the cover says is at stake.

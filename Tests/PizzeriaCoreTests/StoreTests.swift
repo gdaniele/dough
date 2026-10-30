@@ -1,5 +1,5 @@
 import XCTest
-@testable import DoughCore
+@testable import PizzeriaCore
 
 final class StoreTests: XCTestCase {
     private var dir: URL!

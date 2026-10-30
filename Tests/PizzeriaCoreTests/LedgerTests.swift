@@ -1,5 +1,5 @@
 import XCTest
-@testable import DoughCore
+@testable import PizzeriaCore
 
 final class LedgerTests: XCTestCase {
     private var calendar: Calendar = {
@@ -37,7 +37,7 @@ final class LedgerTests: XCTestCase {
         XCTAssertFalse(ledger.entries[0].completed)
     }
 
-    func testThePizzeriaGrowsWithFinishedDoughAndNeverShrinks() {
+    func testThePizzeriaGrowsWithFinishedPizzeriaAndNeverShrinks() {
         var ledger = Ledger(entries: [done(on: 1, minutes: 499)])
         XCTAssertEqual(ledger.feeds, "you")
         ledger.entries.append(done(on: 2, minutes: 1))

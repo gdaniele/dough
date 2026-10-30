@@ -1,4 +1,4 @@
-# Dough
+# Pizzeria
 
 A macOS menu bar app that helps you stay focused by blocking distracting apps. It reads your allow/deny list for both macOS applications and websites, and enforces your own rules for the amount of time you decide. You earn a point of dough for every minute you focus, but lose that session's dough if you end it early.
 
@@ -14,22 +14,22 @@ Lists lock while a session runs, and a session keeps its own copy of them, so yo
 
 ## Install
 
-Dough needs macOS 14 or later.
+Pizzeria needs macOS 14 or later.
 
 Build it yourself:
 
 ```sh
-git clone https://github.com/gdaniele/dough.git
-cd dough
+git clone https://github.com/gdaniele/pizzeria.git
+cd pizzeria
 scripts/build-app.sh
-open build/Dough.app
+open build/Pizzeria.app
 ```
 
-Or download a zip from [Releases](https://github.com/gdaniele/dough/releases). Those builds aren't notarized, so macOS refuses them at first: try to open the app, then go to System Settings › Privacy & Security and choose **Open Anyway**.
+Or download a zip from [Releases](https://github.com/gdaniele/pizzeria/releases). Those builds aren't notarized, so macOS refuses them at first: try to open the app, then go to System Settings › Privacy & Security and choose **Open Anyway**.
 
 ## Permissions
 
-Dough asks for these only when a session has to read a browser:
+Pizzeria asks for these only when a session has to read a browser:
 
 | Permission | Why |
 |---|---|
@@ -38,15 +38,15 @@ Dough asks for these only when a session has to read a browser:
 
 If you turn one down, the running session tells you which browser it can't see. Blocking apps needs no permission.
 
-Each build counts as a new app to macOS, so a permission can look on and not work after you update. If Firefox stops being blocked, remove Dough from System Settings › Privacy & Security › Accessibility and let it ask again.
+Each build counts as a new app to macOS, so a permission can look on and not work after you update. If Firefox stops being blocked, remove Pizzeria from System Settings › Privacy & Security › Accessibility and let it ask again.
 
 ## How blocking works
 
-Dough doesn't use root, the hosts file or a network filter. A blocked app is hidden as soon as it comes to the front, and a full-screen cover goes over it. For websites, Dough checks the front browser's address once a second and covers a blocked page.
+Pizzeria doesn't use root, the hosts file or a network filter. A blocked app is hidden as soon as it comes to the front, and a full-screen cover goes over it. For websites, Pizzeria checks the front browser's address once a second and covers a blocked page.
 
-That makes Dough a commitment device, not a prison:
+That makes Pizzeria a commitment device, not a prison:
 
-- **Force quitting stops the blocking.** It earns nothing, though. The session's clock only runs while the app is watching, so sleep, a force quit or a changed system clock can't run it down. The session picks up where it stopped when Dough is back.
+- **Force quitting stops the blocking.** It earns nothing, though. The session's clock only runs while the app is watching, so sleep, a force quit or a changed system clock can't run it down. The session picks up where it stopped when Pizzeria is back.
 - **Only Safari, Chrome, Arc, Brave, Edge, Vivaldi and Firefox are read.** On a website deny list, any other browser gets through, so add it to the apps list.
 - **The check covers the front window only**, once a second, so a blocked page can show for a moment.
 - **The cover goes on one display**, the one with the app you're using.
@@ -56,15 +56,15 @@ If you want something you can't get out of, use [SelfControl](https://github.com
 
 ## Privacy
 
-Dough has no account and makes no network calls. Everything it keeps is one JSON file on your Mac, at `~/Library/Application Support/Dough/state.json`. Browser addresses are read to make a decision and are never stored.
+Pizzeria has no account and makes no network calls. Everything it keeps is one JSON file on your Mac, at `~/Library/Application Support/Pizzeria/state.json`. Browser addresses are read to make a decision and are never stored.
 
 ## Develop
 
-`DoughCore` holds the rules, the session clock and the bank, and it's Foundation only. `DoughUI` holds the blocker and the views.
+`PizzeriaCore` holds the rules, the session clock and the bank, and it's Foundation only. `PizzeriaUI` holds the blocker and the views.
 
 ```sh
 swift test
-DOUGH_E2E=1 swift test                # also hides and restores a real TextEdit
+PIZZERIA_E2E=1 swift test                # also hides and restores a real TextEdit
 SNAPSHOT_DIR=snapshots swift test     # also writes the views out as PNGs
 ```
 

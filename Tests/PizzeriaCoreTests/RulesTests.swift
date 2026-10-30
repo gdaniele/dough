@@ -1,5 +1,5 @@
 import XCTest
-@testable import DoughCore
+@testable import PizzeriaCore
 
 final class RulesTests: XCTestCase {
     func testHostsComeOutOfWhatAnAddressBarShows() {

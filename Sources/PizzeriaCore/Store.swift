@@ -30,10 +30,10 @@ public struct Store: Sendable {
         self.url = url
     }
 
-    /// ~/Library/Application Support/Dough/state.json
+    /// ~/Library/Application Support/Pizzeria/state.json
     public static var standard: Store {
         let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        return Store(url: base.appendingPathComponent("Dough/state.json"))
+        return Store(url: base.appendingPathComponent("Pizzeria/state.json"))
     }
 
     /// A file that can't be read is moved aside, never overwritten: the bank in it may still be recoverable by hand.

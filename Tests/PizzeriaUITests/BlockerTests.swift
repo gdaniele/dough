@@ -1,9 +1,9 @@
 import AppKit
-import DoughCore
+import PizzeriaCore
 import XCTest
-@testable import DoughUI
+@testable import PizzeriaUI
 
-/// Runs the blocker against a real app, so it hides things on the machine it runs on: only with DOUGH_E2E set (CI sets it).
+/// Runs the blocker against a real app, so it hides things on the machine it runs on: only with PIZZERIA_E2E set (CI sets it).
 @MainActor
 final class BlockerTests: XCTestCase {
     private func wait(_ what: String, until done: () -> Bool) async throws {
@@ -15,7 +15,7 @@ final class BlockerTests: XCTestCase {
     }
 
     private func textEdit() async throws -> NSRunningApplication {
-        try XCTSkipUnless(ProcessInfo.processInfo.environment["DOUGH_E2E"] != nil, "Set DOUGH_E2E to run")
+        try XCTSkipUnless(ProcessInfo.processInfo.environment["PIZZERIA_E2E"] != nil, "Set PIZZERIA_E2E to run")
         _ = NSApplication.shared
         let url = URL(fileURLWithPath: "/System/Applications/TextEdit.app")
         let app = try await NSWorkspace.shared.openApplication(at: url, configuration: NSWorkspace.OpenConfiguration())
@@ -74,14 +74,14 @@ final class BlockerTests: XCTestCase {
 
 @MainActor
 final class ModelTests: XCTestCase {
-    private func model(_ state: AppState = AppState()) throws -> (DoughModel, Store) {
+    private func model(_ state: AppState = AppState()) throws -> (PizzeriaModel, Store) {
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".json")
         addTeardownBlock { try? FileManager.default.removeItem(at: url) }
         let store = Store(url: url)
         var quiet = state
         quiet.rules = BlockRules()
         try store.save(quiet)
-        return (DoughModel(store: store), store)
+        return (PizzeriaModel(store: store), store)
     }
 
     func testGivingUpEndsTheSessionAndPaysNothing() throws {
